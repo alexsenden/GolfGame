@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,7 @@ import javax.imageio.ImageIO;
 
 public class ImageLoader {
 	
-	public static BufferedImage ballsheet, backgrounds, arrow, quit, resume, pausemenu, hole, powerbar, icon;
+	public static BufferedImage ballsheet, backgrounds, arrow, quit, resume, pausemenu, hole, powerbar, icon, polyGradient;
 	public static BufferedImage ball, background, arrows;
 	
 	public enum Visual {
@@ -89,9 +90,30 @@ public class ImageLoader {
 		}
 	}
 	
+	public static BufferedImage cutOutPolygon(Polygon p) { 
+		BufferedImage bimg = new BufferedImage((int)p.getBounds().getWidth(), (int)p.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
+		System.out.println(p.getBounds().height);
+		System.out.println(p.getBounds().width);
+		System.out.println(p.getBounds().getMaxX());
+		System.out.println(p.getBounds().getMinX());
+		System.out.println(p.getBounds().getMaxY());
+		System.out.println(p.getBounds().getMinY());
+		
+		for(int y = (int)p.getBounds().getMinY(); y < p.getBounds().getMaxY(); y++) {
+			for(int x = (int)p.getBounds().getMinX(); x < p.getBounds().getMaxX(); x++) {
+				if(x >= 0 && x < Main.WIDTH && y >= 0 && y < Main.HEIGHT) {
+					if(p.contains(x, y)) {
+						bimg.setRGB(x - (int)p.getBounds().getMinX(), y - (int)p.getBounds().getMinY(), polyGradient.getRGB(x, y));
+					}
+				}
+			}
+		}
+		return bimg;
+	}
+	
 	public static void loadSpriteSheet() {
 		try {
-			backgrounds = ImageIO.read(new File("src/images/bkgd1.png"));
+			backgrounds = ImageIO.read(new File("src/images/bkgd2.png"));
 			ballsheet = ImageIO.read(new File("src/images/ballSpriteSheet.png"));
 			arrows = ImageIO.read(new File("src/images/arrow.png"));
 			quit = ImageIO.read(new File("src/images/quit.png"));
@@ -99,6 +121,7 @@ public class ImageLoader {
 			hole = ImageIO.read(new File("src/images/hole.png"));
 			powerbar = ImageIO.read(new File("src/images/powerbar.png"));
 			icon = ImageIO.read(new File("src/images/icon2.png"));
+			polyGradient = ImageIO.read(new File("src/images/polyGradient3.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);

@@ -3,7 +3,7 @@ package game;
 public class Vector {
 	
 	private final double DAMPENING = 0.8;
-	private final double G = 0.005;
+	private final double G = -0.005;
 	
 	private double x, y;
 	private boolean stalled;

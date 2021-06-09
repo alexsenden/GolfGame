@@ -30,7 +30,7 @@ public class HitArrow extends Component{
 		AffineTransform tx = AffineTransform.getRotateInstance(-1 * theta + Math.PI / 2.0, 32, 32);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 		//System.out.println("Arrow Drawn @ " + ((int)x - 16) + ", " + (Main.HEIGHT - (int)y - 64));
-		g.drawImage(op.filter(bimg, null), (int)x - 24 + (int)(32 * Math.cos(theta)), Main.HEIGHT - (int)y - 24 - (int)(32 * Math.sin(theta)), null);
+		g.drawImage(op.filter(bimg, null), (int)x - 24 + (int)(32 * Math.cos(theta)), (int)y - 24 - (int)(32 * Math.sin(theta)), null);
 	}
 	
 	public double getTheta() {

@@ -22,9 +22,9 @@ public class PowerBar extends Component {
 	@Override
 	public void draw(Graphics g) {
 		if(visible) {
-			g.drawImage(ImageLoader.getImage(Visual.POWERBAR), (int)x, (int)(Main.HEIGHT - y - 32), null);
+			g.drawImage(ImageLoader.getImage(Visual.POWERBAR), (int)x, (int)(y), null);
 			g.setColor(Color.DARK_GRAY);
-			g.fillRect((int)(x + value), (int)(Main.HEIGHT - y - 35), 6, 38);
+			g.fillRect((int)(x + value), (int)(y - 3), 6, 38);
 		}
 	}
 	

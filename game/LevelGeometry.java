@@ -24,7 +24,7 @@ public class LevelGeometry extends Component implements Physical{
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.BLACK);
-		g.drawLine((int)x, (int)(Main.HEIGHT + 16 - y), (int)x2, (int)(Main.HEIGHT + 16 - y2));
+		g.drawLine((int)x, (int)(y), (int)x2, (int)(y2));
 		//g.drawLine(0, 450 - 100, 300, 450 - 100);
 	}
 

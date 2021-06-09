@@ -7,7 +7,7 @@ import game.ImageLoader.Visual;
 public class Main {
 	
 	public static final int FPS = 60;
-	public static final int TPS = 650;
+	public static final int TPS = 400;
 	public static final int WIDTH = 1080;
 	public static final int HEIGHT = 608;
 	
@@ -25,7 +25,7 @@ public class Main {
 		f.setIconImage(ImageLoader.getImage(Visual.ICON));
 		f.setVisible(true);
 		
-		playLevel(2);
+		playLevel(8);
 	}
 	
 	public static void setScreen(Screen screen) {
@@ -43,16 +43,20 @@ public class Main {
 		long lastTimeFrame = System.nanoTime();
         long ctime;
         
-        int ticks = 0;
+        @SuppressWarnings("unused")
+		int ticks = 0;
+        @SuppressWarnings("unused")
         int frames = 0;
+        
+        int stdtps = TPS + 200;
         
         long lastTimeMillis = System.currentTimeMillis();
         long ctimeMillis;
         while(active) {
         	if(Keys.ctrl) {
-        		tps = TPS * 2; 
+        		tps = stdtps * 2; 
         	} else {
-        		tps = TPS;
+        		tps = stdtps;
         	}
         	
             ctime = System.nanoTime();
@@ -73,8 +77,15 @@ public class Main {
             ctimeMillis = System.currentTimeMillis();
             if(ctimeMillis - lastTimeMillis > 1000) {
                 lastTimeMillis = ctimeMillis;
+                if(ticks < TPS - 20) {
+                	stdtps += (TPS - ticks) / 2;
+                }
+                else if(ticks > TPS + 20 && !Keys.ctrl) {
+                	stdtps -= (ticks - TPS) / 2;
+                }
             	//System.out.println("FPS: " + frames);
             	//System.out.println("TPS: " + ticks);
+                //System.out.println(stdtps);
                 ticks = frames = 0;
             }
         }

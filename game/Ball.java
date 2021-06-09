@@ -1,6 +1,5 @@
 package game;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
@@ -28,7 +27,7 @@ public class Ball extends Component {
 	}
 
 	public void draw(Graphics g) {
-		g.drawImage(ImageLoader.getImage(Visual.BALL), (int)x, (int)(Main.HEIGHT - y), null);
+		g.drawImage(ImageLoader.getImage(Visual.BALL), (int)x, (int)(y), null);
 		//g.setColor(Color.BLACK);
 		//g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
 	}
@@ -36,7 +35,7 @@ public class Ball extends Component {
 	public void hit(double theta, double power) {
 		double x, y;
 		stalled = false;
-		y = power * Math.sin(theta);
+		y = power * -Math.sin(theta);
 		x = power * Math.cos(theta);
 		velocity = new Vector(x, y);
 		System.out.println("New vector; x: " + x + " y: " + y);
@@ -65,10 +64,14 @@ public class Ball extends Component {
 		velocity.checkStalled();
 		if(velocity.getStalled()) {
 			stalled = true;
+			y -= 1;
 		}
 	}
 	
 	public void checkCollision(ArrayList<Component> components) {
+		int count;
+		LevelPolygon p;
+		Physical c2;
 		double tempx = x;
 		double tempy = y;
 		tempx += velocity.getX();
@@ -76,24 +79,41 @@ public class Ball extends Component {
 		
 		Point2D.Double stored = null;
 		Point2D.Double[] arr = {null, null};
-		
-		for(Component c : components) {
+		//start fucking around
+		outer: for(Component c : components) {
 			if(c instanceof Physical) {
-				Physical c2 = (Physical)c;
-				arr = intersection(new Ellipse2D.Double(tempx, tempy, radius * 2, radius * 2), (Line2D)(c2.getBounds()));
-				if(arr[0] != null) {
-					if(arr[1] != null) {
-						//System.out.println("BREAK");
-						break;
-					} else if(stored == null) {
-						stored = arr[0];
-					} else {
-						arr[1] = stored;
-						break;
+				if(c instanceof LevelPolygon) {
+					p = (LevelPolygon)c;
+					c2 = null;
+					count = p.getNumPoints();
+				} else {
+					p = null;
+					c2 = (Physical)c;
+					count = 1;
+				}
+				for(int i = 0; i < count; i++) {
+					if(c instanceof LevelPolygon) {
+						c2 = (Physical)(p.getLine(i));
+						//System.out.println(i);
+					}
+					arr = intersection(new Ellipse2D.Double(tempx, tempy, radius * 2, radius * 2), (Line2D)(c2.getBounds()));
+					if(arr[0] != null) {
+						if(arr[1] != null) {
+							//System.out.println("Clean Break");
+							break outer;
+						} else if(stored == null) {
+							//System.out.println("Stored");
+							stored = arr[0];
+						} else {
+							//System.out.println("Mixed Break");
+							arr[1] = stored;
+							break outer;
+						}
 					}
 				}
 			}
 		}
+		//end fucking around
 		if(arr[1] != null) {
 			//System.out.println("REFLECTED");
 			//System.out.println(arr[1].getY() + " " + arr[0].getY());
@@ -187,6 +207,6 @@ public class Ball extends Component {
 	}
 	
 	public Rectangle getBounds() {
-		return new Rectangle((int)x, (int)(Main.HEIGHT - y), 16, 16);
+		return new Rectangle((int)x, (int)(y), 16, 16);
 	}
 }

@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Polygon;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -32,23 +33,28 @@ public class Level extends Screen {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		//components.add(new LevelPolygon(new Polygon(new int[]{100, 200, 900, 800}, new int[]{150, 100, 450, 500}, 4)));
 		spawnx = s.nextInt();
-		spawny = s.nextInt() + 56;
+		spawny = s.nextInt();
 		ball = new Ball(spawnx, spawny);
-		components.add(ball);
 		hole = new Hole(s.nextInt(), s.nextInt());
 		components.add(hole);
-		int i1, i2, i3, i4;
+		s.nextLine();
 		while(s.hasNext()) {
-			i1 = s.nextInt();
-			i2 = s.nextInt();
-			i3 = s.nextInt();
-			i4 = s.nextInt();
-			System.out.println(i1 + " " + i2 + " " + i3 + " " + i4);
-			components.add(new LevelGeometry(i1, i2 + 56, i3, i4 + 56));
+			String l = s.nextLine();
+			//System.out.println(l);
+			int[] arr = SSGUtils.getTerms(l);
+			if(arr.length > 4) {
+				int[][] points = SSGUtils.getCoordsForPolygon(arr);
+				components.add(new LevelPolygon(new Polygon(points[0], points[1], points[0].length)));
+			} else {
+				components.add(new LevelGeometry(arr[0], arr[1], arr[2], arr[3]));
+			}
 		}
+		components.add(ball);
 		powerbar = new PowerBar();
 		components.add(powerbar);
+		
 		/*
 		if(id == 0) {
 			components.add(new LevelGeometry(0, 56, 0, 624));
@@ -100,7 +106,7 @@ public class Level extends Screen {
 				if(Keys.space) {
 					arrow.setShot(true);
 					//System.out.println("Hitting at angle " + arrow.getTheta());
-					ball.hit(arrow.getTheta(), 3 * powerbar.getPower());
+					ball.hit(arrow.getTheta(), 2.3 * powerbar.getPower() + 0.2);
 					powerbar.hide();
 					removeHitArrow();
 				}
